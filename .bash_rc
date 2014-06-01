@@ -1,0 +1,99 @@
+#!/bin/bash
+#
+# Kipp Johnson  
+# Commands taken or adapted from a variety of sources
+#
+
+# Multi-line prompt
+PS1='
+$PWD
+==> '
+
+# Append history file rather then overwrite it
+shopt -s histappend
+# Don't put duplicate lines in history
+export HISTCONTROL=ignoredups
+# Store 1000 commands in bash history
+export HISTFILESIZE=1000
+export HISTSIZE=1000
+# Pull in any newly written lines, allowing to share history within active sessions
+export PROMPT_COMMAND='history -n;'
+#Ignore duplicate history entries
+export HISTIGNORE="&"
+
+#Shortcuts
+alias lk="ls -ltrh"
+alias ..="cd .."
+alias h="cat ~/.bash_history | grep" 
+alias o="open"
+alias f="bc -l <<<" # Quick calculator
+
+#Recursive directory view
+alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
+
+#Spotlight output in terminal
+spotlight () { mdfind "kMDItemDisplayName == '$@'wc"; }
+
+# Get ethernet IP Address
+alias myip='curl ip.appspot.com'
+
+#Quicklook from Command Line 
+function qlf(){ qlmanage -p "$*" >& /dev/null; }
+
+### Some executables and path extensions
+alias pymol=/Applications/MacPyMOL.app/Contents/MacOS/MacPyMOL
+alias delphi95=/Users/kwj//Projects/DelPhi_MAC_F95/delphi95
+alias namd2=/Users/kwj/Projects/namd/namd2
+alias gcc=/usr/bin/gcc # Multiple copies of gcc installed...
+alias vmd='/Applications/VMD\ 1.9.1.app/Contents/MacOS/startup.command'
+
+export AMBERHOME=/Users/kwj/Projects/UsefulFiles/amber12
+export EDITOR="/usr/local/bin/mate -w" # Use TextMate as default editor
+
+export PATH=$PATH:/Users/kwj/Projects/namd
+export julia=/Applications/Julia-0.2.1.app/Contents/Resources/julia/bin/julia
+export OMP_NUM_THREADS=1
+
+
+### Extract function 
+function extract()
+{
+    if [ -f $1 ] ; then
+        case $1 in
+            *.tar.bz2)   tar xvjf $1     ;;
+            *.tar.gz)    tar xvzf $1     ;;
+            *.bz2)       bunzip2 $1      ;;
+            *.rar)       unrar x $1      ;;
+            *.gz)        gunzip $1       ;;
+            *.tar)       tar xvf $1      ;;
+            *.tbz2)      tar xvjf $1     ;;
+            *.tgz)       tar xvzf $1     ;;
+            *.zip)       unzip $1        ;;
+            *.Z)         uncompress $1   ;;
+            *.7z)        7z x $1         ;;
+            *)           echo "'$1' cannot be extracted via >extract<" ;;
+        esac
+    else
+        echo "'$1' is not a valid file!"
+    fi
+}
+
+
+# Creates an archive (*.tar.gz) from given directory.
+function maketar() { tar cvzf "${1%%/}.tar.gz"  "${1%%/}/"; }
+# Create a ZIP archive of a file or folder.
+function makezip() { zip -r "${1%%/}.zip" "$1" ; }
+
+# cdd = change to directory & ls there
+function cdd()
+{
+if [ "$*" = "" ]
+then
+cd
+else
+cd "$*";
+fi
+ls;
+}
+
+### END ###
